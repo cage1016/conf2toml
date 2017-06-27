@@ -1,0 +1,26 @@
+machine:
+  environment:
+    GODIST: "go1.7.3.linux-amd64.tar.gz"
+    IMPORT_PATH: "/home/ubuntu/.go_workspace/src/github.com/cage1016"
+    APP_PATH: "$IMPORT_PATH/conf2toml"  
+  timezone:
+    Asia/Taipei
+dependencies:
+  override:
+    - sudo add-apt-repository ppa:masterminds/glide -y
+    - sudo apt-get update
+    - sudo apt-get install glide -y
+    # Install test utils
+    - go get github.com/axw/gocov/gocov
+    - go get github.com/mattn/goveralls
+    - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+test:
+  pre:
+    - mkdir -p "$IMPORT_PATH"
+    - ln -sf "$(pwd)" "$APP_PATH"
+    - cd "$APP_PATH" && glide install
+  override:
+    - cd "$APP_PATH" && go test -coverprofile=./coverage.out -cover -race -v $(glide novendor)
+  post:
+    - cd "$APP_PATH" && goveralls -coverprofile=./coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+

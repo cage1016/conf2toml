@@ -27,7 +27,6 @@ func replaceSpace(input string) string {
 	return strings.Replace(string(input), " ", "", -1)
 }
 
-
 // isInt
 func isInt(str string) bool {
 	if len(str) == 0 {
@@ -82,18 +81,22 @@ func handleline(input []byte) []byte {
 	return []byte(x)
 }
 
-func Normalization(path string) io.Reader {
-	// open conf
-	conf, _ := os.Open(path)
-	defer conf.Close()
-
-	// read conf
-	buf, err := ioutil.ReadAll(conf)
+func Normalization(path string) ([]byte, error) {
+	buf, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil
+		return []byte{}, err
 	}
 
-	// create tmp conf
+	f := NormalizationReader(bytes.NewReader(buf))
+	return ioutil.ReadAll(f)
+}
+
+func NormalizationReader(input io.Reader) *os.File {
+	buf, err := ioutil.ReadAll(input)
+	if err != nil {
+		return (*os.File)(nil)
+	}
+
 	f, _ := ioutil.TempFile("", "tmp-conf")
 	defer os.Remove(f.Name())
 
@@ -114,7 +117,6 @@ func Normalization(path string) io.Reader {
 		}
 		f.WriteString(fmt.Sprintf("%s\n", line))
 	}
-
 	f.Seek(0, 0)
 	return f
 }

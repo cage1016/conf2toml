@@ -1,8 +1,6 @@
-hash: 4e2d7d07375b54dd276ee0afb60d05636230b326023f50fa63acdedc5da7c3cc
-updated: 2017-06-27T17:48:10.053458771+08:00
+hash: 2c31c504497803dfe6ecc1407a11143f31a248890091730bdcf9dfbfcd0ef702
+updated: 2017-06-27T23:18:24.834142209+08:00
 imports:
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
-  subpackages:
-  - assert
 testImports: []

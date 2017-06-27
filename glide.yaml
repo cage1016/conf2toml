@@ -1,6 +1,4 @@
-package: github.com/cage1016/conf2toml
+package: .
 import:
 - package: github.com/stretchr/testify
   version: ~1.1.4
-  subpackages:
-  - assert
