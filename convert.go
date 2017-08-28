@@ -1,4 +1,4 @@
-package convert
+package conf2toml
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 const (
 	Int   string = "^(?:[-+]?(?:0|[1-9][0-9]*))$"
 	Float string = "^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$"
-	Pair  string = "(.*) =(.*)"
+	Pair  string = "(.*)=(.*)"
 	Trans string = "[[:punct:]]|[[:space:]]"
 )
 
@@ -51,10 +51,10 @@ func replaceAllStringSubmatchFunc(str string) (string, string) {
 		value = groups[2]
 	}
 
-	return key, strings.Trim(value, " ")
+	return strings.Trim(key, " "), strings.Trim(value, " ")
 }
 
-func Transform(line string) string {
+func transform(line string) string {
 	if line[0] == '[' {
 		return "[" + rxReplace.ReplaceAllString(line[1:len(line)-1], "_") + "]"
 	} else {

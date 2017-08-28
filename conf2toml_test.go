@@ -28,6 +28,7 @@ func TestNormalization(t *testing.T) {
 			wantErr:   nil,
 			wantStrings: []string{
 				"[System]",
+				"Workgroup=\"NAS\"",
 				"LoginTheme410=10",
 				"Server_Name=\"\"",
 				"UPNP_UUID=\"1e26ba4f-8a21-48e0-84b6-0d0f90c41a17\"",

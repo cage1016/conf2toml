@@ -7,8 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-
-	"github.com/cage1016/conf2toml/convert"
 )
 
 func Normalization(path string) ([]byte, error) {
@@ -43,7 +41,7 @@ func NormalizationReader(input io.Reader) *os.File {
 			continue
 		}
 
-		f.WriteString(fmt.Sprintf("%s\n", convert.Transform(string(line))))
+		f.WriteString(fmt.Sprintf("%s\n", transform(string(line))))
 	}
 	f.Seek(0, 0)
 	return f
