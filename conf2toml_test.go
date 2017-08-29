@@ -23,7 +23,7 @@ func TestNormalization(t *testing.T) {
 		wantStrings []string
 	}{
 		{
-			name:      "",
+			name:      "success match",
 			givenConf: "example/uLunix.conf",
 			wantErr:   nil,
 			wantStrings: []string{
@@ -42,6 +42,9 @@ func TestNormalization(t *testing.T) {
 				"Name=\"container-station\"",
 				"Class=\"null\"",
 				"Status=\"\"",
+				"cfg__etc_config_qdk_conf=0",
+				"Version=\"2.2.13\"",
+				"ePassword=\"V2@W5Q9N91N4fXGEEyL+yXOlw==\"",
 			},
 		},
 		{
@@ -76,7 +79,7 @@ func TestNormalizationStdin(t *testing.T) {
 		wantStrings []string
 	}{
 		{
-			name: "",
+			name: "success match",
 			givenConf: func() io.Reader {
 				f, _ := os.Open("example/uLunix.conf")
 				return f
@@ -97,6 +100,9 @@ func TestNormalizationStdin(t *testing.T) {
 				"Name=\"container-station\"",
 				"Class=\"null\"",
 				"Status=\"\"",
+				"cfg__etc_config_qdk_conf=0",
+				"Version=\"2.2.13\"",
+				"ePassword=\"V2@W5Q9N91N4fXGEEyL+yXOlw==\"",
 			},
 		},
 		{

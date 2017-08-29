@@ -10,7 +10,7 @@ import (
 const (
 	Int   string = "^(?:[-+]?(?:0|[1-9][0-9]*))$"
 	Float string = "^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$"
-	Pair  string = "(.*)=(.*)"
+	Pair  string = `([^=]*)=(.*)`
 	Trans string = "[[:punct:]]|[[:space:]]"
 )
 
