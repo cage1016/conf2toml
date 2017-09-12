@@ -1,12 +1,13 @@
 package conf2toml
 
 import (
+	"bufio"
 	"bytes"
-	"encoding/binary"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func Normalization(path string) ([]byte, error) {
@@ -20,29 +21,21 @@ func Normalization(path string) ([]byte, error) {
 }
 
 func NormalizationReader(input io.Reader) *os.File {
-	buf, err := ioutil.ReadAll(input)
-	if err != nil {
-		return (*os.File)(nil)
-	}
-
 	f, _ := ioutil.TempFile("", "tmp-conf")
 	defer os.Remove(f.Name())
 
-	if binary.Size(buf) == 0 {
-		return f
-	}
+	w := bufio.NewWriter(f)
 
-	lines := bytes.Split(buf, []byte{'\n'})
-
-	for _, line := range lines {
-		line = bytes.TrimSpace(line)
-		if len(line) == 0 {
-			f.WriteString("\n")
-			continue
+	scanner := bufio.NewScanner(input)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		if len(strings.TrimSpace(scanner.Text())) == 0 {
+			fmt.Fprintln(w, strings.Replace(scanner.Text(), `\n`, "\n", -1))
+		} else {
+			fmt.Fprintln(w, transform(scanner.Text()))
 		}
-
-		f.WriteString(fmt.Sprintf("%s\n", transform(string(line))))
 	}
+	w.Flush()
 	f.Seek(0, 0)
 	return f
 }

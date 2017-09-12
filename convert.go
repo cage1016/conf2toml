@@ -5,32 +5,21 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	valid "github.com/asaskevich/govalidator"
 )
 
 const (
-	Int   string = "^(?:[-+]?(?:0|[1-9][0-9]*))$"
-	Float string = "^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$"
-	Pair  string = `([^=]*)=(.*)`
-	Trans string = "[[:punct:]]|[[:space:]]"
+	StarWithEe string = `^[eE].*`
+	Pair       string = `([^=]*)=(.*)`
+	Trans      string = "[[:punct:]]|[[:space:]]"
 )
 
 var (
-	rxInt      = regexp.MustCompile(Int)
-	rxFloat    = regexp.MustCompile(Float)
-	rxSubmatch = regexp.MustCompile(Pair)
-	rxReplace  = regexp.MustCompile(Trans)
+	rxSubmatch   = regexp.MustCompile(Pair)
+	rxReplace    = regexp.MustCompile(Trans)
+	rxStarWithEe = regexp.MustCompile(StarWithEe)
 )
-
-func isInt(str string) bool {
-	if len(str) == 0 {
-		return true
-	}
-	return rxInt.MatchString(str)
-}
-
-func isFloat(str string) bool {
-	return str != "" && rxFloat.MatchString(str)
-}
 
 func isBoolean(str string) bool {
 	if _, err := strconv.ParseBool(str); err == nil {
@@ -59,9 +48,17 @@ func transform(line string) string {
 		return "[" + rxReplace.ReplaceAllString(line[1:len(line)-1], "_") + "]"
 	} else {
 		key, value := replaceAllStringSubmatchFunc(line)
+
 		if len(value) == 0 {
 			value = fmt.Sprintf("\"\"")
-		} else if isInt(value) || isFloat(value) {
+		} else if valid.IsInt(value) {
+			value = value
+		} else if valid.IsFloat(value) {
+			if rxStarWithEe.MatchString(value) {
+				value = fmt.Sprintf("\"%v\"", value)
+			} else {
+				value = value
+			}
 		} else if isBoolean(value) {
 			b, _ := strconv.ParseBool(value)
 			value = strconv.FormatBool(b)
